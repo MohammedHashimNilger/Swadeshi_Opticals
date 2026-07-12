@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Tell Tailwind to use a `.dark` class on <html> for dark mode,
+   instead of only following the OS setting. This is what lets our
+   dark mode TOGGLE (not just OS preference) control the theme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Brand theme — defined here in CSS instead of tailwind.config.js,
+   which is the Tailwind v4 way. These become usable as classes like
+   bg-navy-600, text-navy-50, font-display, etc.
+
+   Signature: Fraunces is a variable "optical size" typeface — its
+   letterforms literally sharpen at larger sizes, a small, fitting detail
+   for an optical shop's headlines. Manrope carries the body copy and UI.
+   Amber is the single accent color (lens-coating gold), used sparingly
+   for the hero CTA, discount badges, and the aperture-ring signature
+   motif — everything else stays disciplined navy/neutral. */
+@theme {
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", "Georgia", serif;
+
+  --color-navy-50: #eef2f9;
+  --color-navy-100: #d7e0ef;
+  --color-navy-200: #b3c4de;
+  --color-navy-300: #85a1c9;
+  --color-navy-400: #5779ac;
+  --color-navy-500: #385a8c;
+  --color-navy-600: #29456d;
+  --color-navy-700: #1f3555;
+  --color-navy-800: #16263e;
+  --color-navy-900: #0d1826;
+
+  --color-amber-50: #fdf6e9;
+  --color-amber-100: #f8e8c3;
+  --color-amber-200: #f0d494;
+  --color-amber-300: #e4ba5c;
+  --color-amber-400: #cd9a3c;
+  --color-amber-500: #b17f2c;
+  --color-amber-600: #8f6522;
+  --color-amber-700: #6d4d1a;
+}
+
+body {
+  @apply bg-white text-navy-900 dark:bg-navy-900 dark:text-navy-50 antialiased;
+}
+
+/* The aperture ring — the page's one signature visual motif. Used behind
+   the hero headline and, thinned down, as a hover accent on product
+   imagery and category icons. A concentric-ring lens/aperture shape,
+   not a generic blob or gradient. */
+.aperture-ring {
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}

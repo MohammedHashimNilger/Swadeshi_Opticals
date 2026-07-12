@@ -1,0 +1,19 @@
+# robots.txt for Swadeshi Opticals
+# https://swadeshiopticals.com
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /my-orders
+
+# Sitemap
+Sitemap: https://swadeshiopticals.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 10
