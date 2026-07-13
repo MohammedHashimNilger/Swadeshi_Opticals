@@ -18,11 +18,9 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
-// Connect to MongoDB. Doesn't block server startup — Mongoose queues
-// operations until the connection is ready. The .catch here is
-// important: without it, a failed connection becomes an unhandled
-// promise rejection, which crashes the whole Node process on modern
-// Node versions instead of just logging the error.
+// Connect to MongoDB. In serverless environments (like Vercel),
+// we don't block startup if the connection fails - routes will
+// gracefully handle the absence of a database connection.
 connectDB().catch(() => {
   // Error already logged inside connectDB(); nothing further needed here.
 });
