@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Backend API for Swadeshi Opticals",
   "main": "index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "test": "vitest run",
     "dev": "nodemon server/index.js",
