@@ -1,7 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" }
-  ]
+  "buildCommand": "npm install"
 }
