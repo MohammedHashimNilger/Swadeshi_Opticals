@@ -32,8 +32,16 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", db: isDBConnected() ? "connected" : "connecting" });
 });
 
-// Middleware to check DB connection for routes that need it
-const requireDB = (req, res, next) => {
+// Middleware to check DB connection for routes that need it.
+// connectDB() checks mongoose's readyState internally and no-ops if already
+// connected, so calling it again here is cheap once warm — but critically,
+// it means a container that failed to connect once (e.g. during a brief
+// Atlas whitelist propagation delay) gets to retry on the next request
+// instead of being stuck rejecting every request for its entire lifetime.
+const requireDB = async (req, res, next) => {
+  if (!isDBConnected()) {
+    await connectDB();
+  }
   if (!isDBConnected()) {
     return res.status(503).json({ message: "Database connection unavailable. Please try again later." });
   }
