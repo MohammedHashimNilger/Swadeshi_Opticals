@@ -6,7 +6,7 @@ import axios from "axios";
  * so we can just use a relative baseURL and it works identically in
  * dev and in production (where Vercel routes /api/* to the function).
  */
-const api = axios.create({ baseURL: "/api" });
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || "/api" });
 
 // Attach the customer JWT (if present) to every request automatically —
 // but only if the caller hasn't already set an explicit Authorization

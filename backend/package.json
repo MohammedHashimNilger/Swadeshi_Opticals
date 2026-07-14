@@ -1,5 +1,5 @@
 {
-  "name": "swadeshi-opticals-server",
+  "name": "swadeshi-opticals-backend",
   "version": "1.0.0",
   "description": "Backend API for Swadeshi Opticals",
   "main": "index.js",

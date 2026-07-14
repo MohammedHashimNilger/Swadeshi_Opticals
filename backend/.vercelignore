@@ -1,6 +1,5 @@
 node_modules
-tests
-scripts
+frontend
 .git
 .gitignore
 README.md

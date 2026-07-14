@@ -13,4 +13,7 @@ const bannerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Compound index for the common active-banner query used by the homepage
+bannerSchema.index({ isActive: 1, startDate: 1, endDate: 1, displayOrder: 1 });
+
 export default mongoose.model("Banner", bannerSchema);
