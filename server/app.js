@@ -18,49 +18,65 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
-// Vercel (and most PaaS platforms) sit in front of the app as a reverse
-// proxy and always set X-Forwarded-For. Without telling Express to trust
-// that proxy, express-rate-limit (used below via requireDB's siblings —
-// see routes/authRoutes.js, adminRoutes.js, contactRoutes.js) throws a
-// validation error on every request that carries that header, which in
-// practice means every request in production. This is a no-op locally.
 app.set("trust proxy", 1);
 
-// Kick off the MongoDB connection immediately so it's already warm by
-// the time the first request's requireDB middleware awaits it below.
-// We still don't block server startup on it - routes handle absence of
-// a connection gracefully via requireDB.
-connectDB().catch(() => {
-  // Error already logged inside connectDB(); nothing further needed here.
+connectDB().catch(() => {});
+
+// ===== DEBUG LOGGER =====
+app.use((req, res, next) => {
+  console.log("====================================");
+  console.log("Incoming:", req.method, req.originalUrl);
+
+  res.on("finish", () => {
+    console.log(
+      "Finished:",
+      req.method,
+      req.originalUrl,
+      "Status:",
+      res.statusCode
+    );
+  });
+
+  next();
 });
+// ========================
 
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json({ limit: "1mb" }));
 app.use(sanitizeBody);
 
-app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+app.get("/api/health", (req, res) => {
+  console.log("Health endpoint reached");
+  res.json({ status: "ok" });
+});
 
-// Middleware to check DB connection for routes that need it.
-// On a cold start, requests can arrive before the connection (kicked off
-// above) has finished, so this waits briefly for it - but only up to
-// REQUEST_DB_WAIT_MS. That's enough for the common case (Atlas usually
-// connects in well under a second), without holding a request open for
-// the full ~8-10s connection timeout if the database is genuinely down;
-// in that case we fail fast with a 503 and let a later request (after
-// db.js's retry cooldown) pick up a fresh attempt.
 const REQUEST_DB_WAIT_MS = 3000;
 
 const requireDB = async (req, res, next) => {
+  console.log("requireDB START");
+
   if (!isDBConnected()) {
+    console.log("Database not connected. Waiting...");
+
     await Promise.race([
       connectDB(),
-      new Promise((resolve) => setTimeout(resolve, REQUEST_DB_WAIT_MS)),
+      new Promise((resolve) =>
+        setTimeout(resolve, REQUEST_DB_WAIT_MS)
+      ),
     ]);
   }
+
+  console.log("Database connected?", isDBConnected());
+
   if (!isDBConnected()) {
-    return res.status(503).json({ message: "Database connection unavailable. Please try again later." });
+    console.log("Returning 503");
+    return res.status(503).json({
+      message: "Database connection unavailable. Please try again later.",
+    });
   }
+
+  console.log("requireDB END -> next()");
   next();
 };
 
@@ -78,6 +94,4 @@ app.use("/api/contact", requireDB, contactRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-// Deliberately NO app.listen() here — see server/index.js (local dev)
-// and api/index.js (Vercel serverless) for the two ways this app runs.
 export default app;
