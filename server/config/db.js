@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+// By default, Mongoose queues ("buffers") model operations issued while
+// there's no active connection, waiting indefinitely for one to appear.
+// In a serverless environment that's exactly how a single stuck/failed
+// connection turns into a request that hangs forever instead of failing
+// fast - this is true independently of anything requireDB checks, so we
+// turn it off globally as defense in depth.
+mongoose.set("bufferCommands", false);
+
 /**
  * Connects to MongoDB Atlas using the connection string in .env.
  * In serverless environments, we check mongoose's internal connection
