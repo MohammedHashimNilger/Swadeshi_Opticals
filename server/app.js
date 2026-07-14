@@ -46,6 +46,17 @@ app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json({ limit: "1mb" }));
 app.use(sanitizeBody);
 
+app.use((req, res, next) => {
+  console.log({
+    url: req.url,
+    originalUrl: req.originalUrl,
+    path: req.path,
+  });
+
+  next();
+});
+
+
 app.get("/api/health", (req, res) => {
   console.log("Health endpoint reached");
   res.json({ status: "ok" });
