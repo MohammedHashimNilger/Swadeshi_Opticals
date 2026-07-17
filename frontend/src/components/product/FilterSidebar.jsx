@@ -52,7 +52,7 @@ const FILTER_KEYS = [
 const LENS_CATEGORIES = ["lenses", "contact-lenses"];
 const FRAME_CATEGORIES = ["eyeglasses", "sunglasses"];
 const LENS_COLOR_CATEGORIES = ["lenses", "contact-lenses"];
-const LENS_TYPE_EXCLUDED = ["accessories"];
+const LENS_TYPE_EXCLUDED = ["accessories", "contact-lenses"];
 
 const FILTER_LABELS = {
   gender: "Gender",
@@ -90,6 +90,7 @@ export default function FilterSidebar({
   category,
   mobileOpen,
   onMobileClose,
+  onClearAll,
 }) {
   const [colors, setColors] = useState([]);
   const [lensColors, setLensColors] = useState([]);
@@ -121,7 +122,11 @@ export default function FilterSidebar({
   const hasActiveFilters = FILTER_KEYS.some((key) => filters[key]);
 
   function clearAll() {
-    FILTER_KEYS.forEach((key) => onChange(key, ""));
+    if (onClearAll) {
+      onClearAll();
+    } else {
+      FILTER_KEYS.forEach((key) => onChange(key, ""));
+    }
   }
 
   function removeFilter(key) {

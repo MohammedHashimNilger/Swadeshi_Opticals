@@ -804,6 +804,24 @@ export default function ProductForm() {
                   className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm dark:border-navy-700 dark:bg-navy-900 dark:text-navy-50"
                 />
               </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-medium text-navy-700 dark:text-navy-300">
+                  Lens Color
+                </label>
+                <select
+                  value={form.specifications.lensColor}
+                  onChange={(e) => updateSpec("lensColor", e.target.value)}
+                  className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm dark:border-navy-700 dark:bg-navy-900 dark:text-navy-50"
+                >
+                  <option value="">Select lens color</option>
+                  {LENS_COLORS.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </section>
         )}

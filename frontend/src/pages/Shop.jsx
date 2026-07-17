@@ -107,6 +107,15 @@ export default function Shop() {
     setSearchParams(next);
   }
 
+  function clearAllFilters() {
+    const next = new URLSearchParams();
+    // Preserve category, sort, and page
+    if (categorySlug) next.set("category", categorySlug);
+    if (searchParams.get("sort")) next.set("sort", searchParams.get("sort"));
+    if (searchParams.get("page")) next.set("page", searchParams.get("page"));
+    setSearchParams(next);
+  }
+
   const categoryMeta = getCategoryMeta(categorySlug);
   const pageTitle = categoryMeta
     ? `Shop ${categoryMeta.title}`
@@ -196,6 +205,7 @@ export default function Shop() {
               category={categorySlug}
               mobileOpen={mobileFiltersOpen}
               onMobileClose={() => setMobileFiltersOpen(false)}
+              onClearAll={clearAllFilters}
             />
           </div>
         </div>
